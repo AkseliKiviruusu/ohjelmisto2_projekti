@@ -1,12 +1,11 @@
 /* Koko sivun: */
 @font-face {
-    font-family: Parkinsans;
-    src: url("Parkinsans-Regular.ttf"); format("truetype"):
+    font-family: Comfortaa;
+    src: url("Comfortaa-regular.ttf"); format("truetype"):
 }
 
 html {
-    font-family : Parkinsans, Arial, Verdena, sans-serif;
-
+    font-family : Comfortaa, Arial, Verdena, sans-serif;
 }
 
 /* Koko sivun: */
@@ -93,7 +92,7 @@ h2 {
 
 #status article {
     width : 80%;
-    padding : 0.5rem 10% 0.5rem 10%;
+    padding : 1.8% 10% 1.8% 10%;
     margin : 0.4rem 0 0.4rem 0;
     background-color : #fff0e7;
     border-radius : 10px;
@@ -101,12 +100,13 @@ h2 {
 
 h3 {
     font-size : 1.2rem;
+    font-weight : 900;
     color : #a62c00;
     margin : 0;
 }
 #status article p {
-    font-size : 1rem;
-    margin : 1% 0 0 0;
+    font-size : 1.2rem;
+    margin : 1.5% 0 0 0;
 }
 
 
