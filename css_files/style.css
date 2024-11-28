@@ -155,6 +155,10 @@ h3 {
     background-color : #e14f00;
 }
 
+#login_panel button:hover {
+    background-color : #a62c00;
+}
+
 /* Laatikko: lentokohteenvalinta: */
 #prompt {
     font-size : 1.5rem;
