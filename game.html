@@ -5,9 +5,14 @@
     <title>Souvenir Collector</title>
     <script src="game.js" defer></script>
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
+<div id="login_panel">
+    <label for="name">Pelinimi</label>
+    <input type="text" id="name" placeholder="Syötä pelinimesi">
+    <button id="start">Aloita</button>
+    <p class="error_paragraph" id="login_error"></p>
+</div>
 <div id="map"></div>
 <div id="game_box"></div>
 <div id="status"></div>
