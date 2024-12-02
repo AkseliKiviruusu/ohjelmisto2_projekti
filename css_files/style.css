@@ -238,16 +238,16 @@ h3 {
     animation : slideDown 1s ease forwards;
 }
 
-#game_box article {
+.option {
     padding : 1% 5% 1% 5%;
     margin : 1% 0 1% 0;
     background-color : #cee3ed;
     border-radius : 10px;
-    cursor: pointer;
 }
 
-#game_box article:hover {
+.option:hover {
     background-color: #aed4e6;
+    cursor: pointer;
 }
 
 #game_box p {

@@ -59,7 +59,7 @@ function updateStats(location, points, distance, souvenirs) {
 
 function updateOptions(airportArray) {
     for(let i = 0; i < 5; i++) {
-        document.getElementById(`option_${i+1}`).innerHTML = airportArray[i]
+        document.getElementById(`option_${i+1}`).firstElementChild.innerHTML = airportArray[i]
     }
 }
 
@@ -68,6 +68,6 @@ for(let i = 0; i < 5; i++) {
 }
 
 function optionHandler(event) {
-    toggleElementVisibility('prompt_container', false)
+   // toggleElementVisibility('prompt_container', false)
     mapPosition(30, 30)
 }
