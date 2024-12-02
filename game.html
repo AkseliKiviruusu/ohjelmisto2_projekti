@@ -13,7 +13,10 @@
             <img src="logo313x90.png" alt="Souvenir Collector logo">
         </div>
         <div id="menu">
-            <a href="#">MAIN MENU</a>
+            <a href="menu.html">MAIN MENU</a>
+            <a href="#">OHJEET</a>
+            <!--- Tämä vois avata dialogin modal muodossa? Toi href on tossa vaan, että se näyttää samalta kuin
+            toi main menu, kun sen päälle laittaa hiiren.(Vähän niin kuin Javascript moduulin 3 tehtävässä 11) --->
         </div>
     </header>
     <section>
@@ -43,12 +46,12 @@
         </div>
     </section>
     <div id="game_box">
-       <div id="login_panel">
-           <label for="name">PELINIMI</label>
-           <input type="text" id="name" placeholder="Syötä pelinimesi">
-           <button id="start">ALOITA!</button>
-           <p class="error_paragraph" id="login_error"></p>
-       </div>
+        <div id="login_panel">
+            <label for="name">PELINIMI</label>
+            <input type="text" id="name" placeholder="Syötä pelinimesi">
+            <button id="start">ALOITA!</button>
+            <p class="error_paragraph" id="login_error"></p>
+        </div>
         <div id="prompt_container">
             <h3 id="prompt">Valitse seuraava kohteesi: </h3>
             <article id="option_1" class="option">
@@ -81,5 +84,10 @@
     <footer>
     </footer>
 </div>
+<dialog>
+    <p id="instructions">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aut dolore doloremque eum
+        excepturi facere molestias necessitatibus quia ut vel. Ducimus ex exercitationem fuga iusto nemo nobis quas
+        quasi quo.</p>
+</dialog>
 </body>
 </html>
