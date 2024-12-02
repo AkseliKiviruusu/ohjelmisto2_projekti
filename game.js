@@ -25,7 +25,7 @@ function toggleElementVisibility(elementId, state) {
 
 function start() {
     if(!playerName.value || playerName.value.length < 3 || playerName.value.length > 28) {
-        displayError('login_error', 'Syötä nimi joka 3-28 merkkiä pitkä')
+        displayError('login_error', 'Syötä nimi, joka on 3-28 merkkiä pitkä!')
     } else {
         toggleElementVisibility('login_panel', false)
         toggleElementVisibility('prompt_container', true)
