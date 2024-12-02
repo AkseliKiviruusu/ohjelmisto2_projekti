@@ -1,26 +1,38 @@
 const playerName = document.getElementById('name')
 document.getElementById('start').addEventListener('click', start)
 
-function displayError(errorParagraphId, text) {
-    let paragraph = document.getElementById(errorParagraphId)
-    paragraph.innerHTML = text
-    paragraph.hidden = false
+let map;
+
+function displayError(elementId, text) {
+    let element = document.getElementById(elementId)
+    element.innerHTML = text
+    element.hidden = false
     setTimeout(() => {
-        paragraph.hidden = true
+        element.hidden = true
     }, 5000)
+}
+
+function toggleElementVisibility(elementId, state) {
+    let element = document.getElementById(elementId)
+    if(state) {
+        element.classList.remove('hidden')
+        element.classList.add('shown')
+    } else {
+        element.classList.add('hidden')
+        element.classList.remove('shown')
+    }
 }
 
 function start() {
     if(!playerName.value || playerName.value.length < 3 || playerName.value.length > 28) {
         displayError('login_error', 'Syötä nimi joka 3-28 merkkiä pitkä')
     } else {
-        console.log("pass")
-        //document.getElementById('login_panel').hidden = true
+        toggleElementVisibility('login_panel', false)
+        toggleElementVisibility('prompt_container', true)
     }
 }
 
-let map;
-function mapPosition(latitude, longitude, markerText) {
+function mapPosition(latitude, longitude) {
     if(!map) {
         map = L.map('map').setView([latitude, longitude], 13)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -33,17 +45,29 @@ function mapPosition(latitude, longitude, markerText) {
             easeLinearity: 0.25
         })
     }
-    if(markerText) {
-        L.marker([latitude, longitude]).addTo(map)
-            .bindPopup(markerText)
-            .openPopup()
-    }
 }
 
 //Asettaa kartan Helsinki-Vantaan lentokentälle
 mapPosition(60.315369447382345, 24.945276215177994)
 
-//Testilento
-setTimeout(() => {
-    mapPosition(30, 30, "katti")
-}, 5000)
+function updateStats(location, points, distance, souvenirs) {
+    document.getElementById('location').innerHTML = location
+    document.getElementById('points').innerHTML = points
+    document.getElementById('distance').innerHTML = `${distance} km`
+    document.getElementById('souvenirs').innerHTML = `${souvenirs}/7`
+}
+
+function updateOptions(airportArray) {
+    for(let i = 0; i < 5; i++) {
+        document.getElementById(`option_${i+1}`).innerHTML = airportArray[i]
+    }
+}
+
+for(let i = 0; i < 5; i++) {
+    document.getElementById(`option_${i+1}`).addEventListener('click', optionHandler)
+}
+
+function optionHandler(event) {
+    toggleElementVisibility('prompt_container', false)
+    mapPosition(30, 30)
+}
