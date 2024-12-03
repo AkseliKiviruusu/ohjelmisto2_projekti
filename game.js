@@ -2,6 +2,9 @@ const playerName = document.getElementById('name')
 document.getElementById('start').addEventListener('click', start)
 
 let map;
+let airportarray
+
+
 
 function displayError(elementId, text) {
     let element = document.getElementById(elementId)
@@ -27,6 +30,18 @@ function start() {
     if(!playerName.value || playerName.value.length < 3 || playerName.value.length > 28) {
         displayError('login_error', 'Syötä nimi, joka on 3-28 merkkiä pitkä!')
     } else {
+        async function get_airports(){
+            try {
+                const response = await fetch(`http://127.0.0.1:3000/player_name/${playerName.value}`)
+                console.log(response)
+                const airportarray = await response.json()
+                console.log(airportarray)
+                updateOptions(airportarray)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        get_airports()
         toggleElementVisibility('login_panel', false)
         toggleElementVisibility('prompt_container', true)
     }
@@ -59,7 +74,7 @@ function updateStats(location, points, distance, souvenirs) {
 
 function updateOptions(airportArray) {
     for(let i = 0; i < 5; i++) {
-        document.getElementById(`option_${i+1}`).firstElementChild.innerHTML = airportArray[i]
+        document.getElementById(`option_${i+1}`).firstElementChild.innerHTML = airportArray[i][0].airport
     }
 }
 

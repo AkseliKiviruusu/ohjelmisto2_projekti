@@ -1,6 +1,16 @@
 from flask import Flask, Response
 import json
 from connections import connection
+from flask_cors import CORS
+
+
+
+def get_start_location():
+    sql = f'SELECT ident, continent, latitude_deg, longitude_deg FROM airport WHERE ident in(SELECT location FROM game);'
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    start_location = cursor.fetchall()
+    return start_location[0]
 
 class Player:
 
@@ -42,17 +52,27 @@ class Player:
 
 
 app = Flask(__name__)
-@app.route("/5airports")
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-def get_options():
-    try:
-        vastaus = pelaaja.get_5_locations()
-        status = 200
-    except Exception as e:
-        status = 500
-        vastaus = {"virhe": str(e)}
+@app.route("/player_name/<name>")
+def get_player_name(name):
+    start_location = get_start_location()
+    ident, continent, latitude, longitude = start_location
+    pelaaja = Player(name, ident, continent, latitude, longitude, connection)
+    vastaus = pelaaja.get_5_locations()
+    status = 200
     jsonvast = json.dumps(vastaus)
+    return Response(response=jsonvast, status=status, mimetype="application/json")
+
+@app.route("/5airports")
+def get_options():
+    vastaus = pelaaja.get_5_locations()
+    jsonvast = json.dumps(vastaus)
+    status = 200
     return Response(response=jsonvast, status=status, mimetype="application/json")
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=3000)
+
+
