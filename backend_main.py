@@ -152,6 +152,84 @@ def print_story():
       }
       return story
 
+# Palauttaa ohjeet tekstinä:
+@app.route('/instructions')
+def get_instructions():
+    instructions = {
+        "instructions_text" : "Ohjeet:<br>"
+                              "<br>"
+                              "> Tavoitteenasi on kerätä seitsemän (7) matkamuistoa ja <br>"
+                              "  mahdollisimman paljon pisteitä matkustelemalla eri kohteisiin.<br>"
+                              "<br>"
+                              "> Koet ja näet matkan aikana kaikenlaista, ja riippuen kokemuksesta,<br>"
+                              "  voit joko saada tai menettää pisteitä. Myös matkakohteen säällä on<br>"
+                              "  vaikutus pisteisiisi.<br> "
+                              "<br>"
+                              "> Jokaisessa kohteessa sinun on mahdollista kerätä matkamuisto,<br>"
+                              "  mutta tämä ei ole pakollista, eli voit jatkaa matkaa seuraavaan kohteeseen<br>"
+                              "  keräämättä matkamuistoa.<br>"
+                              "  Matkamuistoista saa sitä enemmän pisteitä mitä kauempana olet kotoa.<br>"
+                              "<br>"
+                              "> Muista kuitenkin, että matkan kokonaispituus vaikuttaa negatiivisesti sinun lopullisiin<br>"
+                              "  pisteisiin. Mitä enemmän kilometrejä keräsit, sitä enemmän pisteitä menetät.<br>"
+                              "<br>"
+                              "> Palaat kotiin, kun olet kerännyt seitsemän (7) matkamuistoa.<br>"
+                              "<br>Onnea matkaan!"
+    }
+    return instructions
+
+# Laskee matkamuiston pistearvon
+# aloituslentokentän ja tämän hetkisen lentokentän välisen etäisyyden avulla. Päivittää lasketun pistearvon tietokantaan.
+# Päivittää tietokantaan myös matkamuistojen määrän.
+# Palauttaa tiedon tehdystä tapahtumasta:
+@app.route('/trophy_updates')
+def calculate_trophy_points_and_update_points():
+    # Laskee matkamuiston pistearvon:
+    select_start_lat_long = (f'SELECT latitude_deg, longitude_deg FROM airport,game '
+                             f'WHERE ident = game.start_location AND game.id = 1;')
+    cursor = connection.cursor()
+    cursor.execute(select_start_lat_long)
+    start_lat_long = cursor.fetchall()
+
+    current_lat_long = players[0].latitude, players[0].longitude
+    start_to_current_distance = distance.distance((start_lat_long[0][0], start_lat_long[0][1]),
+                                                  (current_lat_long[0][0], current_lat_long[0][1])).km
+    trophy_points = 30 + int(start_to_current_distance / 125)
+
+    # Päivittää pisteet:
+    players[0].points = players[0].points + trophy_points
+    # print(players[0].points)
+
+    # Päivittää tämänhetkisten matkamuistojen määrän:
+    players[0].trophys = players[0].trophys + 1
+    # print(players[0].trophys)
+
+    response = {
+        'Trophy points calculated. Points and trophies updated': True
+    }
+    return response
+
+
+# Vertaa max_trophyn arvoa current_trophyn arvoon. Paluttaa True/False arvon,
+# jolla voidaan katsoa, jatkuuko looppi eli peli:
+@app.route('/trophy_status')
+def check_trophy_status():
+    select_max_trophy = f'SELECT max_trophy FROM game WHERE game.id = 1;'
+    cursor = connection.cursor()
+    cursor.execute(select_max_trophy)
+    max = cursor.fetchall()
+
+    current_trophy = players[0].trophys
+    if max == current_trophy:
+        response = {
+            'trophy_status': True
+        }
+    else:
+        response = {
+            'trophy_status': False
+        }
+    return response
+
 
 
 @app.route("/5airports")
