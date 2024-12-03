@@ -76,13 +76,16 @@ class Player:
 
     def get_location_weather(self):
         haku = "https://api.openweathermap.org/data/2.5/weather?lat=" + str(self.latitude) + "&lon=" + str(self.longitude) + "&appid=" + str(apikey) + "&units=metric&lang=Fi"
+        json_weather = None
         try:
             vastaus = requests.get(haku)
             if vastaus.status_code == 200:
-                json_weather = vastaus.json()
+                vast = vastaus.json()
+                json_weather = vast["weather"][0]["description"]
         except requests.exceptions.RequestException as e:
-            json_weather = None
-        return json_weather["weather"][0]["description"]
+            json_weather = {}
+            print(e)
+        return json_weather
 
     def get_random_event(self):
         sql = "SELECT text, points FROM random_events ORDER BY RAND() LIMIT 1;"
