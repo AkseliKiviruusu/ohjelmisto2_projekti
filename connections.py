@@ -8,3 +8,7 @@ connection = mysql.connector.connect(
     password= 'salasana',
     autocommit=True
     )
+
+apikey = "+"
+
+
