@@ -74,7 +74,7 @@ function updateStats(location, points, distance, souvenirs) {
 
 function updateOptions(airportArray) {
     for(let i = 0; i < 5; i++) {
-        document.getElementById(`option_${i+1}`).firstElementChild.innerHTML = airportArray[i][0].airport
+        document.getElementById(`option_${i+1}`).firstElementChild.innerHTML = `${airportArray[i][0].airport}, ${airportArray[i][0].country}, ${airportArray[i][0].continent}`
     }
 }
 
