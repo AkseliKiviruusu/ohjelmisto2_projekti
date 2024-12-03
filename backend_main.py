@@ -126,6 +126,31 @@ def new_location(ident):
     return Response(response=jsonvast, status=status, mimetype="application/json")
 
 
+# Palauttaa tarinan tekstin:
+@app.route('/story')
+def print_story():
+      story = {
+            'story_text' : 'Oletko valmis lähtemään ennennäkemättömälle matkalle?<br>'
+                           '<br>'
+                           'Olet jo kauan suunnnittelu tekeväsi aivan ennennäkemättömän lomakiertomatkan<br>'
+                           'ymprärin maailmaa, mutta olet ollut huolissasi lentämisen vaikutuksista ympäristölle.<br>'
+                           'Lentotekniikka on tulevaisuudessa kehittynyt niin paljon, ettei lentämisen vaikutukset<br>'
+                           'ympäristölle ole enää yhtä voimakkaita. Aiot nyt toteuttaa suunnitelmasi.<br>'
+                           '<br>'
+                           'Haluat matkasi olevan ikimuistoinen, sillä et ole varma, voitko lähteä kiertomatkalle<br>'
+                           'enää toiste. Aioit kerätä uniikkeja ja  merkityksellisiä matkamuistoja kohteista,<br>'
+                           'tutustua paikallisiin nähtävyyksiin sekä kokea mahdollisimman paljon.<br>'
+                           '<br>'
+                           'Kestävä kehitys on sinulle tärkeää. Haluat matkasi olevan kestävän kehityksen näkökulmasta<br>'
+                           'mahdollisimman kannattava, mutta tiedostat, ettei se ole realistinen tavoite, kun ottaa huomioon<br>'
+                           'kuluttamisen ja lentämisen vaikutukset ympäristölle. Varaudut siihen, miten tämä tulee<br>'
+                           'varjostamaan matkaasi.<br>'
+                           '<br>'
+                           'Pakkaa matkalaukkusi, sillä ensimmäinen lentosi odottaa!<br>'
+                           '<br>'
+                           'Maailma, täältä tullaan!'
+      }
+      return story
 
 
 
