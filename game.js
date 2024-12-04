@@ -1,3 +1,33 @@
+// Hakee ohjeet backendistä ja avaa ne modaalissa:
+async function open_instructions(event) {
+  event.preventDefault();
+  const dialog_element = document.querySelector('dialog');
+  dialog_element.showModal();
+  let response = await fetch('http://127.0.0.1:3000/instructions');
+  let json_data = await response.json();
+  let instructions = json_data['instructions_text'];
+
+  dialog_element.innerHTML = `<article>
+                                    <h4>OHJEET:</h4>
+                                    <p>${instructions}</p>
+                                    <button>SULJE</button>
+                                </article>`;
+
+  function close_instructions() {
+    let dialog_element = document.querySelector('dialog');
+    dialog_element.innerHTML = '';
+    dialog_element.close();
+  }
+
+  document.querySelector('dialog button').
+      addEventListener('click', close_instructions);
+}
+// Lisätään ohjeiden avaus -funktio OHJEET valintaan:
+document.querySelector('#instructions').
+    addEventListener('click', open_instructions);
+
+
+
 const playerName = document.getElementById('name')
 document.getElementById('start').addEventListener('click', start)
 

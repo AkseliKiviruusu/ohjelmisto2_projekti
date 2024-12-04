@@ -128,7 +128,7 @@ def new_location(ident):
 
 # Palauttaa tarinan tekstin:
 @app.route('/story')
-def print_story():
+def get_story():
       story = {
             'story_text' : 'Oletko valmis lähtemään ennennäkemättömälle matkalle?<br>'
                            '<br>'
@@ -156,24 +156,22 @@ def print_story():
 @app.route('/instructions')
 def get_instructions():
     instructions = {
-        "instructions_text" : "Ohjeet:<br>"
+        "instructions_text" : "Tavoitteenasi on kerätä seitsemän (7) matkamuistoa ja <br>"
+                              "mahdollisimman paljon pisteitä matkustelemalla eri kohteisiin.<br>"
                               "<br>"
-                              "> Tavoitteenasi on kerätä seitsemän (7) matkamuistoa ja <br>"
-                              "  mahdollisimman paljon pisteitä matkustelemalla eri kohteisiin.<br>"
+                              "Koet ja näet matkan aikana kaikenlaista, ja riippuen kokemuksesta,<br>"
+                              "voit joko saada tai menettää pisteitä. Myös matkakohteen säällä on<br>"
+                              "vaikutus pisteisiisi.<br> "
                               "<br>"
-                              "> Koet ja näet matkan aikana kaikenlaista, ja riippuen kokemuksesta,<br>"
-                              "  voit joko saada tai menettää pisteitä. Myös matkakohteen säällä on<br>"
-                              "  vaikutus pisteisiisi.<br> "
+                              "Jokaisessa kohteessa sinun on mahdollista kerätä matkamuisto,<br>"
+                              "mutta tämä ei ole pakollista, eli voit jatkaa matkaa seuraavaan kohteeseen<br>"
+                              "keräämättä matkamuistoa.<br>"
+                              "Matkamuistoista saa sitä enemmän pisteitä mitä kauempana olet kotoa.<br>"
                               "<br>"
-                              "> Jokaisessa kohteessa sinun on mahdollista kerätä matkamuisto,<br>"
-                              "  mutta tämä ei ole pakollista, eli voit jatkaa matkaa seuraavaan kohteeseen<br>"
-                              "  keräämättä matkamuistoa.<br>"
-                              "  Matkamuistoista saa sitä enemmän pisteitä mitä kauempana olet kotoa.<br>"
+                              "Muista kuitenkin, että matkan kokonaispituus vaikuttaa negatiivisesti sinun lopullisiin<br>"
+                              "pisteisiin. Mitä enemmän kilometrejä keräsit, sitä enemmän pisteitä menetät.<br>"
                               "<br>"
-                              "> Muista kuitenkin, että matkan kokonaispituus vaikuttaa negatiivisesti sinun lopullisiin<br>"
-                              "  pisteisiin. Mitä enemmän kilometrejä keräsit, sitä enemmän pisteitä menetät.<br>"
-                              "<br>"
-                              "> Palaat kotiin, kun olet kerännyt seitsemän (7) matkamuistoa.<br>"
+                              "Palaat kotiin, kun olet kerännyt seitsemän (7) matkamuistoa.<br>"
                               "<br>Onnea matkaan!"
     }
     return instructions
