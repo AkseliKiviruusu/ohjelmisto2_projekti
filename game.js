@@ -2,9 +2,36 @@ const playerName = document.getElementById('name')
 document.getElementById('start').addEventListener('click', start)
 
 let map;
-let airportarray
+let airportArray
 
+// Hakee ohjeet backendistä ja avaa ne modaalissa:
+async function open_instructions(event) {
+  event.preventDefault();
+  const dialog_element = document.querySelector('dialog');
+  dialog_element.showModal();
+  let response = await fetch('http://127.0.0.1:3000/instructions');
+  let json_data = await response.json();
+  let instructions = json_data['instructions_text'];
 
+  dialog_element.innerHTML = `<article>
+                                    <h4>OHJEET:</h4>
+                                    <p>${instructions}</p>
+                                    <button>SULJE</button>
+                                </article>`;
+
+  function close_instructions() {
+    let dialog_element = document.querySelector('dialog');
+    dialog_element.innerHTML = '';
+    dialog_element.close();
+  }
+
+  document.querySelector('dialog button').
+      addEventListener('click', close_instructions);
+}
+
+// Lisätään ohjeiden avaus -funktio OHJEET valintaan:
+document.querySelector('#instructions').
+    addEventListener('click', open_instructions);
 
 function displayError(elementId, text) {
     let element = document.getElementById(elementId)
@@ -30,18 +57,17 @@ function start() {
     if(!playerName.value || playerName.value.length < 3 || playerName.value.length > 28) {
         displayError('login_error', 'Syötä nimi, joka on 3-28 merkkiä pitkä!')
     } else {
-        async function get_airports(){
+        async function getAirports(){
             try {
                 const response = await fetch(`http://127.0.0.1:3000/player_name/${playerName.value}`)
-                console.log(response)
-                const airportarray = await response.json()
-                console.log(airportarray)
-                updateOptions(airportarray)
+                airportArray = await response.json()
+                airportArray = airportArray.flat()
+                updateOptions(airportArray)
             } catch (error) {
                 console.log(error)
             }
         }
-        get_airports()
+        getAirports()
         toggleElementVisibility('login_panel', false)
         toggleElementVisibility('prompt_container', true)
     }
@@ -74,8 +100,20 @@ function updateStats(location, points, distance, souvenirs) {
 
 function updateOptions(airportArray) {
     for(let i = 0; i < 5; i++) {
-        document.getElementById(`option_${i+1}`).firstElementChild.innerHTML = `${airportArray[i][0].airport}, ${airportArray[i][0].country}, ${airportArray[i][0].continent}`
+        airportArray[i].id = `option_${i+1}`
+        let element = document.getElementById(airportArray[i].id)
+        element.firstElementChild.innerHTML = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
+
     }
+}
+
+function reasdf() {
+    element.addEventListener('mouseover', () => {
+            element.textContent = `${airportArray[i].latitude_deg}, ${airportArray[i].longitude_deg}`
+        })
+        element.addEventListener('mouseout', () => {
+            element.textContent = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
+        })
 }
 
 for(let i = 0; i < 5; i++) {
@@ -83,6 +121,89 @@ for(let i = 0; i < 5; i++) {
 }
 
 function optionHandler(event) {
-   // toggleElementVisibility('prompt_container', false)
-    mapPosition(30, 30)
+    let airfield = airportArray.find(airport => airport.id === event.currentTarget.id)
+    toggleElementVisibility('prompt_container', false)
+    mapPosition(airfield.latitude_deg, airfield.longitude_deg)
+    game(airfield)
+}
+
+async function checkIfEnoughTrophies(){
+    try {
+        const response = await fetch(`http://127.0.0.1:3000/trophy_status`)
+        return await response.json()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function takeSouvenir(){
+    try {
+        const response = await fetch(`http://127.0.0.1:3000/trophy_updates`)
+        return await response.json()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function movePlayer(ident) {
+    try {
+        const response = await fetch(`http://127.0.0.1:3000/new_location/${ident}`)
+        return await response.json()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function getNewAirports() {
+    try {
+        const response = await fetch(`http://127.0.0.1:3000/5airports`)
+        airportArray = await response.json()
+        airportArray = airportArray.flat()
+        updateOptions(airportArray)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+function askAboutSouvenir(event) {
+    return new Promise((resolve) => {
+        if (!event) return
+        if (event.target.id === 'takes_souvenir') {
+            takeSouvenir().then(resolve)
+        } else {
+            resolve()
+        }
+        toggleElementVisibility('souvenir_question', false);
+    })
+}
+
+async function game(airfield) {
+     try {
+        let movePlayerRes = await movePlayer(airfield.ident)
+        document.getElementById('random_event').innerHTML = movePlayerRes[1]
+        toggleElementVisibility('souvenir_question', true)
+
+        const button = document.getElementById('takes_souvenir')
+        async function handleSouvenirClick(event) {
+            await askAboutSouvenir(event)
+            let trophies = await checkIfEnoughTrophies()
+            console.log(trophies)
+            if (trophies.trophy_status) {
+                 return alert('game over')
+            }
+            await getNewAirports()
+            toggleElementVisibility('prompt_container', true)
+
+            button.removeEventListener('click', handleSouvenirClick)
+        }
+
+        button.addEventListener('click', handleSouvenirClick)
+
+    } catch (error) {
+        console.log(error)
+    }
+
+
+
 }

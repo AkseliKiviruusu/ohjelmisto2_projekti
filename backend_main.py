@@ -128,7 +128,7 @@ def new_location(ident):
 
 # Palauttaa tarinan tekstin:
 @app.route('/story')
-def print_story():
+def get_story():
       story = {
             'story_text' : 'Oletko valmis lähtemään ennennäkemättömälle matkalle?<br>'
                            '<br>'
@@ -156,24 +156,22 @@ def print_story():
 @app.route('/instructions')
 def get_instructions():
     instructions = {
-        "instructions_text" : "Ohjeet:<br>"
+        "instructions_text" : "Tavoitteenasi on kerätä seitsemän (7) matkamuistoa ja <br>"
+                              "mahdollisimman paljon pisteitä matkustelemalla eri kohteisiin.<br>"
                               "<br>"
-                              "> Tavoitteenasi on kerätä seitsemän (7) matkamuistoa ja <br>"
-                              "  mahdollisimman paljon pisteitä matkustelemalla eri kohteisiin.<br>"
+                              "Koet ja näet matkan aikana kaikenlaista, ja riippuen kokemuksesta,<br>"
+                              "voit joko saada tai menettää pisteitä. Myös matkakohteen säällä on<br>"
+                              "vaikutus pisteisiisi.<br> "
                               "<br>"
-                              "> Koet ja näet matkan aikana kaikenlaista, ja riippuen kokemuksesta,<br>"
-                              "  voit joko saada tai menettää pisteitä. Myös matkakohteen säällä on<br>"
-                              "  vaikutus pisteisiisi.<br> "
+                              "Jokaisessa kohteessa sinun on mahdollista kerätä matkamuisto,<br>"
+                              "mutta tämä ei ole pakollista, eli voit jatkaa matkaa seuraavaan kohteeseen<br>"
+                              "keräämättä matkamuistoa.<br>"
+                              "Matkamuistoista saa sitä enemmän pisteitä mitä kauempana olet kotoa.<br>"
                               "<br>"
-                              "> Jokaisessa kohteessa sinun on mahdollista kerätä matkamuisto,<br>"
-                              "  mutta tämä ei ole pakollista, eli voit jatkaa matkaa seuraavaan kohteeseen<br>"
-                              "  keräämättä matkamuistoa.<br>"
-                              "  Matkamuistoista saa sitä enemmän pisteitä mitä kauempana olet kotoa.<br>"
+                              "Muista kuitenkin, että matkan kokonaispituus vaikuttaa negatiivisesti sinun lopullisiin<br>"
+                              "pisteisiin. Mitä enemmän kilometrejä keräsit, sitä enemmän pisteitä menetät.<br>"
                               "<br>"
-                              "> Muista kuitenkin, että matkan kokonaispituus vaikuttaa negatiivisesti sinun lopullisiin<br>"
-                              "  pisteisiin. Mitä enemmän kilometrejä keräsit, sitä enemmän pisteitä menetät.<br>"
-                              "<br>"
-                              "> Palaat kotiin, kun olet kerännyt seitsemän (7) matkamuistoa.<br>"
+                              "Palaat kotiin, kun olet kerännyt seitsemän (7) matkamuistoa.<br>"
                               "<br>Onnea matkaan!"
     }
     return instructions
@@ -185,15 +183,20 @@ def get_instructions():
 @app.route('/trophy_updates')
 def calculate_trophy_points_and_update_points():
     # Laskee matkamuiston pistearvon:
-    select_start_lat_long = (f'SELECT latitude_deg, longitude_deg FROM airport,game '
-                             f'WHERE ident = game.start_location AND game.id = 1;')
+    select_start_lat_long = (
+        f'SELECT latitude_deg, longitude_deg FROM airport,game '
+        f'WHERE ident = game.start_location AND game.id = 1;'
+    )
     cursor = connection.cursor()
     cursor.execute(select_start_lat_long)
     start_lat_long = cursor.fetchall()
 
-    current_lat_long = players[0].latitude, players[0].longitude
-    start_to_current_distance = distance.distance((start_lat_long[0][0], start_lat_long[0][1]),
-                                                  (current_lat_long[0][0], current_lat_long[0][1])).km
+    start_lat, start_long = start_lat_long[0]
+    current_lat_long = (players[0].latitude, players[0].longitude)
+    start_to_current_distance = distance.distance(
+        (start_lat, start_long),
+        (current_lat_long[0], current_lat_long[1])
+    ).km
     trophy_points = 30 + int(start_to_current_distance / 125)
 
     # Päivittää pisteet:
@@ -220,7 +223,8 @@ def check_trophy_status():
     max = cursor.fetchall()
 
     current_trophy = players[0].trophys
-    if max == current_trophy:
+    print(current_trophy)
+    if max[0][0] == current_trophy:
         response = {
             'trophy_status': True
         }
@@ -242,5 +246,3 @@ def get_options():
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=3000)
-
-
