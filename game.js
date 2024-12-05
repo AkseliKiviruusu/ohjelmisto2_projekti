@@ -121,12 +121,32 @@ function mapPosition(latitude, longitude) {
 //Asettaa kartan Helsinki-Vantaan lentokentälle
 mapPosition(60.315369447382345, 24.945276215177994)
 
-function updateStats(location, points, distance, souvenirs) {
-    document.getElementById('location').innerHTML = location
-    document.getElementById('points').innerHTML = points
-    document.getElementById('distance').innerHTML = `${distance} km`
-    document.getElementById('souvenirs').innerHTML = `${souvenirs}/7`
+// Hakee päivitetyt pisteet, matkan ja matkamuistot Pythonista ja pävittää sivun Peliteidot laatikon osiot (sijaintia lukuunottamatta):
+async function updateStats() {
+  let response_location = await fetch('http://127.0.0.1:3000/location_name');
+  let json_location = await response_location.json();
+  let location = json_location['location_name'];
+
+  let response_points = await fetch('http://127.0.0.1:3000/points');
+  let json_points = await response_points.json();
+  let points = json_points['current_points'];
+
+  let response_distance = await fetch('http://127.0.0.1:3000/distance');
+  let json_distance = await response_distance.json();
+  let distance = json_distance['travelled_distance'];
+
+  let response_trophies = await fetch('http://127.0.0.1:3000/souvenirs');
+  let json_trophies = await response_trophies.json();
+  let souvenirs = json_trophies['trophies_collected'];
+
+  document.getElementById('location').innerHTML = location;
+  document.getElementById('points').innerHTML = points;
+  document.getElementById(
+      'distance').innerHTML = `${distance} km`;
+  document.getElementById(
+      'souvenirs').innerHTML = `${souvenirs}/7`;
 }
+
 
 function updateOptions(airportArray) {
     for(let i = 0; i < 5; i++) {

@@ -237,6 +237,54 @@ def calculate_trophy_points_and_update_points():
     }
     return response
 
+# Laskee lopulliset pisteet (pelaajan pisteet - ((kuljettu matka / jaetaan 1000 että saadaan km) // 500))
+@app.route('/final_points')
+def calculate_final_points():
+    final_points = players[-1].points - ((players[-1].distance / 1000) // 500)
+    calculated_points = {
+        'final_points' : final_points
+    }
+    return calculated_points
+
+# Hakee lentokentän nimen, jolla pelaaja on:
+@app.route('/location_name')
+def get_location_name():
+    sql = f'SELECT name FROM airport WHERE ident = "{players[-1].ident}"'
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    airport_name = cursor.fetchall()
+    location = {
+        'location_name' : airport_name
+    }
+    return location
+
+# Hakee pelaajan pisteet ja antaa ne palautusarvona:
+@app.route('/points')
+def get_points():
+    player_points = players[-1].points
+    collected_points = {
+        'current_points' : player_points
+    }
+    return collected_points
+
+# Hakee pelaajan kulkeman matkan ja antaa sen palautusarvona:
+@app.route('/distance')
+def get_distance():
+    player_distance = players[-1].distance
+    travel_distance = {
+        'travelled_distance' : player_distance
+    }
+    return travel_distance
+
+# Hakee pelaajan keräämät matkamuistot (määrä) ja antaa sen palautusarvona:
+@app.route('/souvenirs')
+def get_trophies():
+    player_trophies = players[-1].trophys
+    collected_trophies = {
+        'trophies_collected' : player_trophies
+    }
+    return collected_trophies
+
 
 # Vertaa max_trophyn arvoa current_trophyn arvoon. Paluttaa True/False arvon,
 # jolla voidaan katsoa, jatkuuko looppi eli peli:
