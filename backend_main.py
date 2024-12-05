@@ -135,21 +135,15 @@ def new_location(ident):
     pelaaja.distance += distance_to
     pelaaja.set_new_location(ident)
     weather = pelaaja.get_location_weather()
+    weather_description = ""
     weather_points = 0
     if weather != None:
+        weather_description = weather["description"]
         weather_points = pelaaja.get_weather_points(weather['id'])
-        return weather_points
     event = pelaaja.get_random_event()
     point_change = weather_points + event["points"]
     pelaaja.adjust_points(point_change)
-    vastaus = {
-        "weather": weather,
-        "event_string": event["string"],
-        "point_change": point_change,
-        "player_points": pelaaja.points,
-        "player_distance": pelaaja.distance
-    }
-
+    vastaus = weather_description, event["string"], pelaaja.points, pelaaja.distance, point_change
     status = 200
     jsonvast = json.dumps(vastaus)
     return Response(response=jsonvast, status=status, mimetype="application/json")
