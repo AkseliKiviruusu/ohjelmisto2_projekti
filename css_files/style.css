@@ -266,6 +266,7 @@ h3 {
 #souvenir_question {
     max-height : 0;
     overflow : hidden;
+    background-color : #e5f1ff;
 }
 
 #souvenir_question.hidden {
@@ -275,6 +276,33 @@ h3 {
 #souvenir_question.shown {
     max-height : 100px;
     animation : slideDown 1s ease forwards;
+    width : 80%;
+    padding : 2% 0 2% 0;
+    margin : 0 10% 2% 10%;
+    border-radius : 10px;
+}
+
+#souvenir_question h3 {
+    margin : 2% 0 2% 0;
+    font-size : 1.5rem;
+    color : #101e24;
+}
+
+#souvenir_question button {
+    padding : 2% 4% 2% 4%;
+    font-size : 1.2rem;
+    font-weight : 600;
+    color : #fff0e7;
+    background-color : #e14f00;
+    border-radius : 10px;
+}
+
+#souvenir_question button:hover {
+    background-color : #a62c00;
+}
+
+#question {
+    margin-top : 3rem;
 }
 
 .option {
@@ -299,7 +327,7 @@ h3 {
 footer {
     background-color : #101e24;
     height : 3rem;
-    margin-top : 2rem;
+    margin-top : 20%;
 }
 
 /* Dialogi elementti: */
