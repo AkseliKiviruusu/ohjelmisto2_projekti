@@ -306,21 +306,50 @@ h3 {
 }
 
 .option {
+    font-size : 1.2rem;
     padding : 1% 5% 1% 5%;
     margin : 1% 0 1% 0;
     background-color : #e5f1ff;
     border-radius : 10px;
+    transition: all 0.3s ease;
 }
 
 .option:hover {
+    padding : 1% 5% 1% 5%;
+    margin : 1% 0 1% 0;
+    border-radius : 10px;
     background-color: #aed4e6;
     cursor: pointer;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
 }
 
 #game_box p {
     text-align : center;
     font-size : 1.2rem;
     margin : 0 2% 0 2%;
+}
+
+.marker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.marker-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-bottom: 2px;
+}
+
+.marker-label {
+    font-size: 11px;
+    color: #5e5a5a;
+    text-align: center;
+    white-space: nowrap;
+    font-family : Comfortaa, Arial, Verdena, sans-serif;
 }
 
 /* Sivun alasosa: */

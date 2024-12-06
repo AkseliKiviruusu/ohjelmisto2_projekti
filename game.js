@@ -31,7 +31,7 @@ document.querySelector('#instructions').
 const playerName = document.getElementById('name')
 document.getElementById('start').addEventListener('click', start)
 
-let map;
+let map
 let airportArray
 
 // Hakee ohjeet backendistä ja avaa ne modaalissa:
@@ -105,14 +105,14 @@ function start() {
 
 function mapPosition(latitude, longitude) {
     if(!map) {
-        map = L.map('map').setView([latitude, longitude], 13)
+        map = L.map('map').setView([latitude, longitude], 3)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map)
     } else {
         map.flyTo([latitude, longitude], 13, {
             animate: true,
-            duration: 5,
+            duration: 3.5,
             easeLinearity: 0.25
         })
     }
@@ -120,6 +120,8 @@ function mapPosition(latitude, longitude) {
 
 //Asettaa kartan Helsinki-Vantaan lentokentälle
 mapPosition(60.315369447382345, 24.945276215177994)
+const markerGroup = L.layerGroup().addTo(map)
+addMarkers([{text: "Sinä", latitude: 60.315369447382345, longitude: 24.945276215177994, current: true}])
 
 // Hakee päivitetyt pisteet, matkan ja matkamuistot Pythonista ja pävittää sivun Peliteidot laatikon osiot (sijaintia lukuunottamatta):
 async function updateStats() {
@@ -147,22 +149,46 @@ async function updateStats() {
       'souvenirs').innerHTML = `${souvenirs}/7`;
 }
 
+function addMarkers(locations) {
+    locations.forEach(location => {
+        const { latitude, longitude, text, current } = location
+        let color = current && 'green' || 'orange'
+        markerGroup.addLayer(L.marker([latitude, longitude], {
+            icon: L.divIcon({
+            className: 'custom-label',
+            html: `
+                <div class="marker-container">
+                    <div class="marker-dot" style="background-color: ${color};"></div>
+                    <div class="marker-label">${text}</div>
+                </div>
+            `,
+            iconSize: [0, 0]
+        }),
+        }).addTo(map))
+    })
+}
 
 function updateOptions(airportArray) {
+    let locationArray = []
     for(let i = 0; i < 5; i++) {
+        locationArray.push({text: airportArray[i].airport, latitude: airportArray[i].latitude_deg, longitude: airportArray[i].longitude_deg})
+
         airportArray[i].id = `option_${i+1}`
         let element = document.getElementById(airportArray[i].id)
         element.firstElementChild.innerHTML = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
 
-    }
-}
-
-function reasdf() {
-    element.addEventListener('mouseover', () => {
-            element.textContent = `${airportArray[i].latitude_deg}, ${airportArray[i].longitude_deg}`
+        //Alempi näyttää koordinaatit hoveratessa, mutta lienee tarpeeton jos vaihtoehtojen sijainnit näytetään kartalla
+        element.addEventListener('mouseover', () => {
+            //element.firstElementChild.textContent = `${airportArray[i].latitude_deg}, ${airportArray[i].longitude_deg}`
         })
         element.addEventListener('mouseout', () => {
-            element.textContent = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
+            //element.firstElementChild.textContent = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
+        })
+    }
+    addMarkers(locationArray)
+    map.flyTo(map.getCenter(), 1, {
+            animate: true,
+            duration: 2
         })
 }
 
@@ -174,7 +200,11 @@ function optionHandler(event) {
     let airfield = airportArray.find(airport => airport.id === event.currentTarget.id)
     toggleElementVisibility('prompt_container', false)
     mapPosition(airfield.latitude_deg, airfield.longitude_deg)
-    game(airfield)
+    setTimeout(() => {
+        markerGroup.clearLayers()
+        addMarkers([{text: 'Sinä', latitude: airfield.latitude_deg, longitude: airfield.longitude_deg, current: true}])
+        game(airfield)
+    }, 3500)
 }
 
 async function checkIfEnoughTrophies(){
@@ -215,7 +245,6 @@ async function getNewAirports() {
     }
 }
 
-
 function askAboutSouvenir(event) {
     return new Promise((resolve) => {
         if (!event) return
@@ -230,15 +259,16 @@ function askAboutSouvenir(event) {
 
 async function game(airfield) {
      try {
-        let movePlayerRes = await movePlayer(airfield.ident)
-        document.getElementById('random_event').innerHTML = movePlayerRes[1]
-        toggleElementVisibility('souvenir_question', true)
+         let movePlayerRes = await movePlayer(airfield.ident)
+         await updateStats()
+         document.getElementById('random_event').innerHTML = movePlayerRes[1]
+         toggleElementVisibility('souvenir_question', true)
 
-        const button = document.getElementById('takes_souvenir')
-        async function handleSouvenirClick(event) {
+         const button = document.getElementById('takes_souvenir')
+         async function handleSouvenirClick(event) {
             await askAboutSouvenir(event)
+            await updateStats()
             let trophies = await checkIfEnoughTrophies()
-            console.log(trophies)
             if (trophies.trophy_status) {
                  return alert('game over')
             }
