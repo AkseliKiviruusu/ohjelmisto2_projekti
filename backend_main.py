@@ -13,8 +13,16 @@ def get_start_location():
     start_location = cursor.fetchall()
     return start_location[0]
 
+def get_max_trophies():
+    select_max_trophy = f'SELECT max_trophy FROM game WHERE game.id = 1;'
+    cursor = connection.cursor()
+    cursor.execute(select_max_trophy)
+    max_t = cursor.fetchall()
+    return max_t
+
 
 class Player:
+    max_trophies = get_max_trophies()
 
     def __init__(self, name, ident, continent, latitude, longitude, connection, trophys=0, distance=0, points=0):
         self.name = name
@@ -26,6 +34,7 @@ class Player:
         self.trophys = trophys
         self.distance = distance
         self.points = points
+        self.trophy_goal = Player.max_trophies[0][0]
 
     def get_random_location(self, deg, min, max):
         sql = (
@@ -238,14 +247,22 @@ def calculate_trophy_points_and_update_points():
     }
     return response
 
-# Laskee lopulliset pisteet (pelaajan pisteet - ((kuljettu matka / jaetaan 1000 että saadaan km) // 500))
+# Laskee lopulliset pisteet (pelaajan pisteet - ((kuljettu matka / jaetaan 1000 että saadaan km) // 500)) ja lisää pelaajan scoreboardiin:
 @app.route('/final_points')
 def calculate_final_points():
-    final_points = players[-1].points - ((players[-1].distance / 1000) // 500)
+    final_points = players[-1].points - (players[-1].distance // 500)
+    players[-1].points = final_points
+
+    sql = f"INSERT INTO scoreboard (Screen_name, Score) VALUES ('{players[-1].name}','{final_points}')"
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    connection.commit()
+
     calculated_points = {
         'final_points' : final_points
     }
     return calculated_points
+
 
 # Hakee lentokentän nimen, jolla pelaaja on:
 @app.route('/location_name')
@@ -291,14 +308,9 @@ def get_trophies():
 # jolla voidaan katsoa, jatkuuko looppi eli peli:
 @app.route('/trophy_status')
 def check_trophy_status():
-    select_max_trophy = f'SELECT max_trophy FROM game WHERE game.id = 1;'
-    cursor = connection.cursor()
-    cursor.execute(select_max_trophy)
-    max = cursor.fetchall()
-
+    max_trophy = players[-1].trophy_goal
     current_trophy = players[-1].trophys
-    print(current_trophy)
-    if max[0][0] == current_trophy:
+    if max_trophy == current_trophy:
         response = {
             'trophy_status': True
         }

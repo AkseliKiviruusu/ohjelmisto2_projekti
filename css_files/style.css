@@ -276,29 +276,9 @@ h3 {
 #souvenir_question.shown {
     max-height : 100px;
     animation : slideDown 1s ease forwards;
-    width : 80%;
-    padding : 2% 0 2% 0;
-    margin : 0 10% 2% 10%;
     border-radius : 10px;
-}
-
-#souvenir_check {
-    max-height : 0;
-    overflow : hidden;
-    background-color : #e5f1ff;
-}
-
-#souvenir_check.hidden {
-    animation : slideUp 1s ease forwards;
-}
-
-#souvenir_shown.shown {
-    max-height : 100px;
-    animation : slideDown 1s ease forwards;
-    width : 80%;
-    padding : 2% 0 2% 0;
-    margin : 0 10% 2% 10%;
-    border-radius : 10px;
+    padding : 1% 0 3% 0;
+    margin-bottom : 2%;
 }
 
 #souvenir_question h3 {
@@ -347,6 +327,71 @@ h3 {
     text-align : center;
     font-size : 1.2rem;
     margin : 0 2% 0 2%;
+}
+
+#souvenir_check {
+    max-height : 0;
+    overflow : hidden;
+    background-color : #e5f1ff;
+}
+
+#souvenir_check.hidden {
+    animation : slideUp 1s ease forwards;
+}
+
+#souvenir_check.shown {
+    max-height : 100px;
+    animation : slideDown 1s ease forwards;
+    padding : 1% 0 3% 0;
+    border-radius : 10px;
+}
+
+#souvenir_check p {
+    margin : 2% 0 3% 0;
+    font-size : 1.5rem;
+    font-weight : 500;
+}
+
+#loop_check {
+    padding : 2% 4% 2% 4%;
+    font-size : 1.2rem;
+    font-weight : 600;
+    color : #fff0e7;
+    background-color : #e14f00;
+    border-radius : 10px;
+}
+
+#loop_check:hover {
+    background-color : #a62c00;
+}
+
+#gameover_container {
+    max-height : 0;
+    overflow : hidden;
+    background-color : #e5f1ff;
+}
+
+#gameover_container.hidden {
+    animation : slideUp 1s ease forwards;
+}
+
+#gameover_container.shown {
+    max-height : 100px;
+    animation : slideDown 1s ease forwards;
+    border-radius : 10px;
+    padding : 3% 0 3% 0;
+    margin-bottom : 2%;
+}
+
+#gameover_container h3 {
+    font-size : 2rem;
+    color : #101e24;
+    margin-bottom : 2%;
+}
+
+#gameover_container p {
+    margin-bottom : 3%;
+    font-size : 1.5rem;
 }
 
 .marker-container {

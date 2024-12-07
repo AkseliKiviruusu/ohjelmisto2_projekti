@@ -22,17 +22,16 @@ async function open_instructions(event) {
   document.querySelector('dialog button').
       addEventListener('click', close_instructions);
 }
+
 // Lisätään ohjeiden avaus -funktio OHJEET valintaan:
 document.querySelector('#instructions').
     addEventListener('click', open_instructions);
 
+const playerName = document.getElementById('name');
+document.getElementById('start').addEventListener('click', start);
 
-
-const playerName = document.getElementById('name')
-document.getElementById('start').addEventListener('click', start)
-
-let map
-let airportArray
+let map;
+let airportArray;
 
 // Hakee ohjeet backendistä ja avaa ne modaalissa:
 async function open_instructions(event) {
@@ -64,64 +63,73 @@ document.querySelector('#instructions').
     addEventListener('click', open_instructions);
 
 function displayError(elementId, text) {
-    let element = document.getElementById(elementId)
-    element.innerHTML = text
-    element.hidden = false
-    setTimeout(() => {
-        element.hidden = true
-    }, 5000)
+  let element = document.getElementById(elementId);
+  element.innerHTML = text;
+  element.hidden = false;
+  setTimeout(() => {
+    element.hidden = true;
+  }, 5000);
 }
 
 function toggleElementVisibility(elementId, state) {
-    let element = document.getElementById(elementId)
-    if(state) {
-        element.classList.remove('hidden')
-        element.classList.add('shown')
-    } else {
-        element.classList.add('hidden')
-        element.classList.remove('shown')
-    }
+  let element = document.getElementById(elementId);
+  if (state) {
+    element.classList.remove('hidden');
+    element.classList.add('shown');
+  } else {
+    element.classList.add('hidden');
+    element.classList.remove('shown');
+  }
 }
 
 function start() {
-    if(!playerName.value || playerName.value.length < 3 || playerName.value.length > 28) {
-        displayError('login_error', 'Syötä nimi, joka on 3-28 merkkiä pitkä!')
-    } else {
-        async function getAirports(){
-            try {
-                const response = await fetch(`http://127.0.0.1:3000/player_name/${playerName.value}`)
-                airportArray = await response.json()
-                airportArray = airportArray.flat()
-                updateOptions(airportArray)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        getAirports()
-        toggleElementVisibility('login_panel', false)
-        toggleElementVisibility('prompt_container', true)
+  if (!playerName.value || playerName.value.length < 3 ||
+      playerName.value.length > 28) {
+    displayError('login_error', 'Syötä nimi, joka on 3-28 merkkiä pitkä!');
+  } else {
+    async function getAirports() {
+      try {
+        const response = await fetch(
+            `http://127.0.0.1:3000/player_name/${playerName.value}`);
+        airportArray = await response.json();
+        airportArray = airportArray.flat();
+        updateOptions(airportArray);
+      } catch (error) {
+        console.log(error);
+      }
     }
+
+    getAirports();
+    toggleElementVisibility('login_panel', false);
+    toggleElementVisibility('prompt_container', true);
+  }
 }
 
 function mapPosition(latitude, longitude) {
-    if(!map) {
-        map = L.map('map').setView([latitude, longitude], 3)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(map)
-    } else {
-        map.flyTo([latitude, longitude], 13, {
-            animate: true,
-            duration: 3.5,
-            easeLinearity: 0.25
-        })
-    }
+  if (!map) {
+    map = L.map('map').setView([latitude, longitude], 3);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+  } else {
+    map.flyTo([latitude, longitude], 13, {
+      animate: true,
+      duration: 3.5,
+      easeLinearity: 0.25,
+    });
+  }
 }
 
 //Asettaa kartan Helsinki-Vantaan lentokentälle
-mapPosition(60.315369447382345, 24.945276215177994)
-const markerGroup = L.layerGroup().addTo(map)
-addMarkers([{text: "Sinä", latitude: 60.315369447382345, longitude: 24.945276215177994, current: true}])
+mapPosition(60.315369447382345, 24.945276215177994);
+const markerGroup = L.layerGroup().addTo(map);
+addMarkers([
+  {
+    text: 'Sinä',
+    latitude: 60.315369447382345,
+    longitude: 24.945276215177994,
+    current: true,
+  }]);
 
 // Hakee päivitetyt pisteet, matkan ja matkamuistot Pythonista ja pävittää sivun Peliteidot laatikon osiot (sijaintia lukuunottamatta):
 async function updateStats() {
@@ -150,140 +158,213 @@ async function updateStats() {
 }
 
 function addMarkers(locations) {
-    locations.forEach(location => {
-        const { latitude, longitude, text, current } = location
-        let color = current && 'green' || 'orange'
-        markerGroup.addLayer(L.marker([latitude, longitude], {
-            icon: L.divIcon({
-            className: 'custom-label',
-            html: `
+  locations.forEach(location => {
+    const {latitude, longitude, text, current} = location;
+    let color = current && 'green' || 'orange';
+    markerGroup.addLayer(L.marker([latitude, longitude], {
+      icon: L.divIcon({
+        className: 'custom-label',
+        html: `
                 <div class="marker-container">
                     <div class="marker-dot" style="background-color: ${color};"></div>
                     <div class="marker-label">${text}</div>
                 </div>
             `,
-            iconSize: [0, 0]
-        }),
-        }).addTo(map))
-    })
+        iconSize: [0, 0],
+      }),
+    }).addTo(map));
+  });
 }
 
 function updateOptions(airportArray) {
-    let locationArray = []
-    for(let i = 0; i < 5; i++) {
-        locationArray.push({text: airportArray[i].airport, latitude: airportArray[i].latitude_deg, longitude: airportArray[i].longitude_deg})
+  let locationArray = [];
+  for (let i = 0; i < 5; i++) {
+    locationArray.push({
+      text: airportArray[i].airport,
+      latitude: airportArray[i].latitude_deg,
+      longitude: airportArray[i].longitude_deg,
+    });
 
-        airportArray[i].id = `option_${i+1}`
-        let element = document.getElementById(airportArray[i].id)
-        element.firstElementChild.innerHTML = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
+    airportArray[i].id = `option_${i + 1}`;
+    let element = document.getElementById(airportArray[i].id);
+    element.firstElementChild.innerHTML = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`;
 
-        //Alempi näyttää koordinaatit hoveratessa, mutta lienee tarpeeton jos vaihtoehtojen sijainnit näytetään kartalla
-        element.addEventListener('mouseover', () => {
-            //element.firstElementChild.textContent = `${airportArray[i].latitude_deg}, ${airportArray[i].longitude_deg}`
-        })
-        element.addEventListener('mouseout', () => {
-            //element.firstElementChild.textContent = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
-        })
-    }
-    addMarkers(locationArray)
-    map.flyTo(map.getCenter(), 1, {
-            animate: true,
-            duration: 2
-        })
+    //Alempi näyttää koordinaatit hoveratessa, mutta lienee tarpeeton jos vaihtoehtojen sijainnit näytetään kartalla
+    element.addEventListener('mouseover', () => {
+      //element.firstElementChild.textContent = `${airportArray[i].latitude_deg}, ${airportArray[i].longitude_deg}`
+    });
+    element.addEventListener('mouseout', () => {
+      //element.firstElementChild.textContent = `${airportArray[i].airport}, ${airportArray[i].country}, ${airportArray[i].continent}`
+    });
+  }
+  addMarkers(locationArray);
+  map.flyTo(map.getCenter(), 1, {
+    animate: true,
+    duration: 2,
+  });
 }
 
-for(let i = 0; i < 5; i++) {
-    document.getElementById(`option_${i+1}`).addEventListener('click', optionHandler)
+for (let i = 0; i < 5; i++) {
+  document.getElementById(`option_${i + 1}`).
+      addEventListener('click', optionHandler);
 }
 
 function optionHandler(event) {
-    let airfield = airportArray.find(airport => airport.id === event.currentTarget.id)
-    toggleElementVisibility('prompt_container', false)
-    mapPosition(airfield.latitude_deg, airfield.longitude_deg)
-    setTimeout(() => {
-        markerGroup.clearLayers()
-        addMarkers([{text: 'Sinä', latitude: airfield.latitude_deg, longitude: airfield.longitude_deg, current: true}])
-        game(airfield)
-    }, 3500)
+  let airfield = airportArray.find(
+      airport => airport.id === event.currentTarget.id);
+  toggleElementVisibility('prompt_container', false);
+  mapPosition(airfield.latitude_deg, airfield.longitude_deg);
+  setTimeout(() => {
+    markerGroup.clearLayers();
+    addMarkers([
+      {
+        text: 'Sinä',
+        latitude: airfield.latitude_deg,
+        longitude: airfield.longitude_deg,
+        current: true,
+      }]);
+    game(airfield);
+  }, 3500);
 }
 
-async function checkIfEnoughTrophies(){
-    try {
-        const response = await fetch(`http://127.0.0.1:3000/trophy_status`)
-        return await response.json()
-    } catch (error) {
-        console.log(error)
-    }
+async function checkIfEnoughTrophies() {
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/trophy_status`);
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-async function takeSouvenir(){
-    try {
-        const response = await fetch(`http://127.0.0.1:3000/trophy_updates`)
-        return await response.json()
-    } catch (error) {
-        console.log(error)
-    }
+async function takeSouvenir() {
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/trophy_updates`);
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function movePlayer(ident) {
-    try {
-        const response = await fetch(`http://127.0.0.1:3000/new_location/${ident}`)
-        return await response.json()
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/new_location/${ident}`);
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function getNewAirports() {
-    try {
-        const response = await fetch(`http://127.0.0.1:3000/5airports`)
-        airportArray = await response.json()
-        airportArray = airportArray.flat()
-        updateOptions(airportArray)
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/5airports`);
+    airportArray = await response.json();
+    airportArray = airportArray.flat();
+    updateOptions(airportArray);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function askAboutSouvenir(event) {
-    return new Promise((resolve) => {
-        if (!event) return
-        if (event.target.id === 'takes_souvenir') {
-            takeSouvenir().then(resolve)
-        } else {
-            resolve()
-        }
-        toggleElementVisibility('souvenir_question', false);
-    })
+// Ota painikkeen toiminta:
+async function takeButtonClick(event) {
+  event.preventDefault();
+  await takeSouvenir();
+  await updateStats();
+  toggleElementVisibility('souvenir_question', false);
+  toggleElementVisibility('souvenir_check', true);
+  document.querySelector(
+      '#souvenir_text').innerHTML = `Otit kohteesta matkamuiston!`;
+  const take_button = document.getElementById('takes_souvenir');
+  const leave_button = document.getElementById('leaves_souvenir');
+  take_button.removeEventListener('click', takeButtonClick);
+  leave_button.removeEventListener('click', leaveButtonClick);
 }
 
+// Jätä-painikkeen toiminta:
+async function leaveButtonClick(event) {
+  toggleElementVisibility('souvenir_question', false);
+  toggleElementVisibility('souvenir_check', true);
+  document.querySelector(
+      '#souvenir_text').innerHTML = `Et ottanut kohteesta matkamuistoa.`;
+  const take_button = document.getElementById('takes_souvenir');
+  const leave_button = document.getElementById('leaves_souvenir');
+  take_button.removeEventListener('click', takeButtonClick);
+  leave_button.removeEventListener('click', leaveButtonClick);
+}
+
+// Laksee lopulliset pisteet ja päivittää tietokannan scoreboardin:
+async function getFinalPoints() {
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/final_points`);
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Hakee pelaajan kulkeman matkan:
+async function getFinalDistance() {
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/distance`);
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Tsekkaa jatketaanko peliä:
+async function checkGameLoop(event) {
+  let trophies = await checkIfEnoughTrophies();
+
+  // Jos kaikki matkamuistot on kerätty:
+  if (trophies['trophy_status'] === true) {
+    const response_f_points_a = await fetch('http://127.0.0.1:3000/points');
+    const json_f_points_a = await response_f_points_a.json();
+    const final_points_a = json_f_points_a['current_points'];
+    const final_points_b = await getFinalPoints();
+    const final_distance = await getFinalDistance();
+
+    document.querySelector('#score_before').innerHTML = final_points_a;
+    document.querySelector(
+        '#final_distance').innerHTML = final_distance['travelled_distance'];
+    document.querySelector(
+        '#final_score').innerHTML = final_points_b['final_points'];
+
+    toggleElementVisibility('souvenir_check', false);
+    await toggleElementVisibility('gameover_container', true);
+    await updateStats();
+
+    // Jos matkamuistoja puuttuu:
+  } else if (trophies['trophy_status'] === false) {
+    await getNewAirports();
+    toggleElementVisibility('souvenir_check', false);
+    toggleElementVisibility('prompt_container', true);
+  }
+  const loop_check_button = document.querySelector('#loop_check');
+  loop_check_button.removeEventListener('click', checkGameLoop);
+}
+
+
+// Pelin pääfunktio:
 async function game(airfield) {
-     try {
-         let movePlayerRes = await movePlayer(airfield.ident)
-         await updateStats()
-         document.getElementById('random_event').innerHTML = movePlayerRes[1]
-         toggleElementVisibility('souvenir_question', true)
+  try {
+    let movePlayerRes = await movePlayer(airfield.ident);
+    await updateStats();
+    document.getElementById('random_event').innerHTML = movePlayerRes[1];
+    toggleElementVisibility('souvenir_question', true);
 
-         const button = document.getElementById('takes_souvenir')
-         async function handleSouvenirClick(event) {
-            await askAboutSouvenir(event)
-            await updateStats()
-            let trophies = await checkIfEnoughTrophies()
-            if (trophies.trophy_status) {
-                 return alert('game over')
-            }
-            await getNewAirports()
-            toggleElementVisibility('prompt_container', true)
+    const take_button = document.getElementById('takes_souvenir');
+    const leave_button = document.getElementById('leaves_souvenir');
 
-            button.removeEventListener('click', handleSouvenirClick)
-        }
+    take_button.addEventListener('click', takeButtonClick);
+    leave_button.addEventListener('click', leaveButtonClick);
 
-        button.addEventListener('click', handleSouvenirClick)
+    const loop_check_button = document.querySelector('#loop_check');
 
-    } catch (error) {
-        console.log(error)
-    }
+    loop_check_button.addEventListener('click', checkGameLoop);
 
-
+  } catch (error) {
+    console.log(error);
+  }
 
 }
