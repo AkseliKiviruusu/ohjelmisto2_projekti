@@ -296,7 +296,7 @@ def check_trophy_status():
     cursor.execute(select_max_trophy)
     max = cursor.fetchall()
 
-    current_trophy = players[0].trophys
+    current_trophy = players[-1].trophys
     print(current_trophy)
     if max[0][0] == current_trophy:
         response = {

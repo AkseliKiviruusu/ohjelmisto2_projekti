@@ -15,8 +15,6 @@
         <div id="menu">
             <a href="menu.html">PÄÄVALIKKO</a>
             <p id="instructions">OHJEET</p>
-            <!--- Tämä vois avata dialogin modal muodossa? Toi href on tossa vaan, että se näyttää samalta kuin
-            toi main menu, kun sen päälle laittaa hiiren.(Vähän niin kuin Javascript moduulin 3 tehtävässä 11) --->
         </div>
     </header>
     <section>
@@ -53,7 +51,7 @@
             <p class="error_paragraph" id="login_error"></p>
         </div>
         <div id="prompt_container">
-            <h3 id="prompt">Valitse seuraava kohteesi: </h3>
+            <h3 id="prompt">Valitse matkakohde: </h3>
             <article id="option_1" class="option">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid amet culpa cum ducimus explicabo
                     facilis
@@ -92,6 +90,16 @@
             <h3 id="question">Haluatko ottaa kohteesta matkamuiston?</h3>
             <button id="takes_souvenir">Ota</button>
             <button id="leaves_souvenir">Jätä</button>
+        </div>
+        <div id="souvenir_check">
+            <p id="souvenir_text"></p>
+            <button id="loop_check">Jatka</button>
+        </div>
+        <div id="gameover_container">
+            <h3>Game Over</h3>
+            <p>Matkasi on nyt tullut päätökseen, ja olet palannut kotiin.</p>
+            <p>Keräsit matkan aikana <b id="score_before"></b> pistettä, mutta matkasi pituus, joka oli n. <b id="final_distance"></b> km vähensi pisteitäsi.</p>
+            <p>Lopullinen pistemääräsi on <b id="final_score"></b>!</p>
         </div>
     </div>
     <footer>
