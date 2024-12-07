@@ -29,7 +29,42 @@ document.querySelector('#story').addEventListener('click', open_story);
 
 
 
-// Tulostauluko hakeminen ja näyttäminen modaalina, kun painetaan tulostaulukko vaihtoehtoa:
+// Hakee Top 10 pelaajaa ja näyttää ne pelaajalle HTML:dialogi osiossa, joka avataan modaalina:
+async function showScoreboard(event) {
+  let dialog_element = document.querySelector('dialog');
+  dialog_element.showModal();
+  event.preventDefault();
+  let scores_response = await fetch(
+      'http://127.0.0.1:3000/scoreboard');
+  let json_scores = await scores_response.json();
+  console.log(json_scores);
+
+  let scoreboard_container = document.createElement('div');
+  scoreboard_container.id = 'scoreboard_container';
+  scoreboard_container.innerHTML = `<article class="scoreboard_row"><p id='p_title'>#</p><p id="n_title">Nimi:</p><p id="s_title">Pisteet:</p></article>`
+  for (let p = 0; p < json_scores.length; p++) {
+    console.log(json_scores[p][0]);
+    console.log(json_scores[p][1]);
+    let row = document.createElement('article');
+    row.classList.add('scoreboard_row');
+    row.innerHTML = `<p class="placement">${p + 1}</p><p class="player_name">${json_scores[p][0]}</p><p class="player_score">${json_scores[p][1]}</p>`;
+    scoreboard_container.appendChild(row);
+  }
+
+  function closeScoreboard() {
+    dialog_element.innerHTML = '';
+    dialog_element.close();
+  }
+
+  dialog_element.innerHTML += '<h2>TOP 10 PELAAJAA</h2>';
+  dialog_element.appendChild(scoreboard_container)
+  dialog_element.innerHTML += '<button>Sulje</button>';
+  document.querySelector('dialog button').
+      addEventListener('click', closeScoreboard);
+
+}
+
+document.querySelector('#scoreboard').addEventListener('click', showScoreboard);
 
 
 

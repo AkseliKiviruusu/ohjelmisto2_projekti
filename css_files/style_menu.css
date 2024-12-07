@@ -78,6 +78,7 @@ a {
 dialog {
     width : 80%;
     background-color : #e5f1ff;
+    text-align : center;
 }
 
 dialog article {
@@ -123,4 +124,81 @@ dialog button {
 
 dialog button:hover {
     background-color : #a62c00;
+}
+
+/* Scoreboard: */
+#scoreboard_container {
+    width : 70%;
+    padding : 2%;
+    margin : 1% 13% 1% 13%;
+    background-color: #ff4d00;
+    border-radius: 20px;
+}
+.scoreboard_row {
+    width: 98%;
+    padding : 0;
+    margin: 0.5% 1% 0.5% 1%;
+    background-color: #fffcfa;
+    border-radius: 10px;
+    text-align : left;
+    display : flex;
+}
+
+#p_title {
+    width : 4.5%;
+    padding : 1.5% 1.5% 1.5% 4%;
+    margin : 0;
+    height : 100%;
+    color : #fffcfa;
+    background-color : #a62c00;
+    font-weight : 600;
+    border-right : medium dashed #ff4d00;
+    border-radius : 10px 0 0 10px;
+}
+
+#n_title {
+    width : 65%;
+    margin : 0;
+    padding : 1.5% 0 1.5% 5%;
+    font-weight : 600;
+    border-right : medium dashed #ff4d00;
+    color : #fffcfa;
+    background-color : #a62c00;
+
+}
+
+#s_title {
+    margin : 0;
+    width : 15%;
+    padding : 1.5% 0 1.5% 5%;
+    font-weight : 600;
+    color : #fffcfa;
+    background-color : #a62c00;
+    border-radius : 0 10px 10px 0;
+}
+
+.placement {
+    width : 4.5%;
+    padding : 3% 1.5% 3% 4%;
+    margin : 0;
+    height : 100%;
+    color : #a62c00;
+    font-weight : 600;
+    border-right : medium dashed #ff4d00;
+}
+
+.player_name {
+    width : 65%;
+    margin : 0;
+    padding : 3% 0 3% 5%;
+    font-weight : 600;
+    border-right : medium dashed #ff4d00;
+
+}
+
+.player_score {
+    margin : 0;
+    width : 15%;
+    padding : 3% 0 3% 5%;
+    font-weight : 600;
 }

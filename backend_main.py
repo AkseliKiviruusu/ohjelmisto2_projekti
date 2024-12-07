@@ -63,7 +63,8 @@ class Player:
         cursor.execute(sql, (ident,))
         location_cordinates = cursor.fetchall()
         distance_to = distance.distance(location_cordinates, (self.latitude, self.longitude)).meters
-        return distance_to
+        distance_km = distance_to / 1000
+        return distance_km
 
     def set_new_location(self, ident):
         sql = f'SELECT ident, continent, latitude_deg, longitude_deg FROM airport WHERE ident = %s ;'
@@ -270,7 +271,7 @@ def get_points():
 # Hakee pelaajan kulkeman matkan ja antaa sen palautusarvona:
 @app.route('/distance')
 def get_distance():
-    player_distance = players[-1].distance
+    player_distance = f'{players[-1].distance:.2f}'
     travel_distance = {
         'travelled_distance' : player_distance
     }
@@ -306,6 +307,28 @@ def check_trophy_status():
             'trophy_status': False
         }
     return response
+
+# Lisää pelaajan tietokannan scoreboard-tauluun:
+@app.route('/scoreboard_add_player')
+def scoreboard_screen_name_and_points(name,points):
+    sql = f"INSERT INTO scoreboard (Screen_name, Score) VALUES ('{name}','{points}')"
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    connection.commit()
+    response = {
+        'playerAddedtoScoreboard' : True
+    }
+    return response
+
+# Hakee top 10 tulosta tietokannan scoreboard-taulusta:
+@app.route('/scoreboard')
+def top_10_players():
+    sql = f"Select Screen_name, Score from scoreboard order by Score desc limit 10"
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print(result)
+    return result
 
 
 @app.route("/5airports")
