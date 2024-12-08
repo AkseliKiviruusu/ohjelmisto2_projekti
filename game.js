@@ -350,6 +350,7 @@ async function game(airfield) {
   try {
     let movePlayerRes = await movePlayer(airfield.ident);
     await updateStats();
+    document.getElementById('weather_desc').innerHTML = movePlayerRes[0];
     document.getElementById('random_event').innerHTML = movePlayerRes[1];
     toggleElementVisibility('souvenir_question', true);
 
