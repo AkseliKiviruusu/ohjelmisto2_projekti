@@ -352,6 +352,8 @@ async function game(airfield) {
     await updateStats();
     document.getElementById('weather_desc').innerHTML = movePlayerRes[0];
     document.getElementById('random_event').innerHTML = movePlayerRes[1];
+    document.getElementById('event_points').innerHTML = movePlayerRes[6];
+    document.getElementById('weather_points').innerHTML = movePlayerRes[5];
     toggleElementVisibility('souvenir_question', true);
 
     const take_button = document.getElementById('takes_souvenir');
