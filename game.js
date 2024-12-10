@@ -315,6 +315,7 @@ async function getFinalDistance() {
 // Tsekkaa jatketaanko peliä:
 async function checkGameLoop(event) {
   let trophies = await checkIfEnoughTrophies();
+  console.log(trophies);
 
   // Jos kaikki matkamuistot on kerätty:
   if (trophies['trophy_status'] === true) {
@@ -340,10 +341,8 @@ async function checkGameLoop(event) {
     toggleElementVisibility('souvenir_check', false);
     toggleElementVisibility('prompt_container', true);
   }
-  const loop_check_button = document.querySelector('#loop_check');
-  loop_check_button.removeEventListener('click', checkGameLoop);
-}
 
+}
 
 // Pelin pääfunktio:
 async function game(airfield) {
@@ -352,8 +351,10 @@ async function game(airfield) {
     await updateStats();
     document.getElementById('weather_desc').innerHTML = movePlayerRes[0];
     document.getElementById('random_event').innerHTML = movePlayerRes[1];
-    document.getElementById('event_points').innerHTML = movePlayerRes[6];
-    document.getElementById('weather_points').innerHTML = movePlayerRes[5];
+    document.getElementById(
+        'event_points').innerHTML = `${movePlayerRes[6]} pistettä.`;
+    document.getElementById(
+        'weather_points').innerHTML = `${movePlayerRes[5]} pistettä.`;
     toggleElementVisibility('souvenir_question', true);
 
     const take_button = document.getElementById('takes_souvenir');
@@ -362,7 +363,7 @@ async function game(airfield) {
     take_button.addEventListener('click', takeButtonClick);
     leave_button.addEventListener('click', leaveButtonClick);
 
-    const loop_check_button = document.querySelector('#loop_check');
+    let loop_check_button = document.querySelector('#loop_check');
 
     loop_check_button.addEventListener('click', checkGameLoop);
 

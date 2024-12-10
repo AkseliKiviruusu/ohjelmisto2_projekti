@@ -97,7 +97,7 @@ class Player:
             vastaus = requests.get(haku)
             if vastaus.status_code == 200:
                 vast = vastaus.json()
-                description = vast["weather"][0]["description"]
+                description = vast["weather"][0]["description"].capitalize() + '.'
                 weather_id = vast["weather"][0]["id"]
                 json_weather = {"description": description, "id": weather_id}
         except requests.exceptions.RequestException as e:

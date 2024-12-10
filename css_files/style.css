@@ -149,7 +149,7 @@ h3 {
 
 @keyframes slideUp {
     from {
-        max-height : 200px;
+        max-height : 600px;
         padding-top : 2%;
         padding-bottom : 2%;
     }
@@ -167,7 +167,7 @@ h3 {
         padding-bottom : 0;
     }
     to {
-        max-height : 200px;
+        max-height : 600px;
         padding-top : 2%;
         padding-bottom : 2%;
     }
@@ -259,7 +259,7 @@ h3 {
 }
 
 #prompt_container.shown {
-    max-height : 400px;
+    max-height : 600px;
     animation : slideDown 1s ease forwards;
 }
 
@@ -274,21 +274,26 @@ h3 {
 }
 
 #souvenir_question.shown {
-    max-height : 100px;
+    max-height : 700px;
     animation : slideDown 1s ease forwards;
     border-radius : 10px;
-    padding : 1% 0 3% 0;
+    padding : 1% 0 5% 0;
     margin-bottom : 2%;
 }
 
-#souvenir_question h3 {
+#souvenir_question.shown h3 {
     margin : 2% 0 2% 0;
     font-size : 1.5rem;
     color : #101e24;
 }
 
+#souvenir_question.shown p {
+    margin-bottom : 1%;
+}
+
 #souvenir_question button {
     padding : 2% 4% 2% 4%;
+    margin-bottom : 2%;
     font-size : 1.2rem;
     font-weight : 600;
     color : #fff0e7;
@@ -383,10 +388,14 @@ h3 {
     margin-bottom : 2%;
 }
 
-#gameover_container h3 {
+#gameover_container.shown h3 {
     font-size : 2rem;
-    color : #101e24;
-    margin-bottom : 2%;
+    width : 50%;
+    color : #e5f1ff;
+    background-color : #2d4c5d;
+    padding : 1% 0 1% 0;
+    margin : 0 25% 2% 25%;
+    border-radius : 10px;
 }
 
 #gameover_container p {
