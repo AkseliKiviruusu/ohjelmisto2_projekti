@@ -224,7 +224,7 @@ function optionHandler(event) {
         current: true,
       }]);
     game(airfield);
-  }, 3500);
+  }, 500);
 }
 
 async function checkIfEnoughTrophies() {
@@ -268,12 +268,13 @@ async function getNewAirports() {
 // Ota painikkeen toiminta:
 async function takeButtonClick(event) {
   event.preventDefault();
-  await takeSouvenir();
+  let trophy_points = await takeSouvenir();
   await updateStats();
   toggleElementVisibility('souvenir_question', false);
   toggleElementVisibility('souvenir_check', true);
   document.querySelector(
       '#souvenir_text').innerHTML = `Otit kohteesta matkamuiston!`;
+  document.querySelector('#souvenier_points').innerHTML = `Sait matkamuistosta ${trophy_points} pistettä`;
   const take_button = document.getElementById('takes_souvenir');
   const leave_button = document.getElementById('leaves_souvenir');
   take_button.removeEventListener('click', takeButtonClick);

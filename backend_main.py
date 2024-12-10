@@ -242,10 +242,9 @@ def calculate_trophy_points_and_update_points():
     players[-1].trophys = players[-1].trophys + 1
     # print(players[0].trophys)
 
-    response = {
-        'Trophy points calculated. Points and trophies updated': True
-    }
-    return response
+    status = 200
+    jsonvast = json.dumps(trophy_points)
+    return Response(response=jsonvast, status=status, mimetype="application/json")
 
 # Laskee lopulliset pisteet (pelaajan pisteet - ((kuljettu matka / jaetaan 1000 että saadaan km) // 500)) ja lisää pelaajan scoreboardiin:
 @app.route('/final_points')
