@@ -1,31 +1,3 @@
-// Hakee ohjeet backendistä ja avaa ne modaalissa:
-async function open_instructions(event) {
-  event.preventDefault();
-  const dialog_element = document.querySelector('dialog');
-  dialog_element.showModal();
-  let response = await fetch('http://127.0.0.1:3000/instructions');
-  let json_data = await response.json();
-  let instructions = json_data['instructions_text'];
-
-  dialog_element.innerHTML = `<article>
-                                    <h4>OHJEET:</h4>
-                                    <p>${instructions}</p>
-                                    <button>SULJE</button>
-                                </article>`;
-
-  function close_instructions() {
-    let dialog_element = document.querySelector('dialog');
-    dialog_element.innerHTML = '';
-    dialog_element.close();
-  }
-
-  document.querySelector('dialog button').
-      addEventListener('click', close_instructions);
-}
-
-// Lisätään ohjeiden avaus -funktio OHJEET valintaan:
-document.querySelector('#instructions').
-    addEventListener('click', open_instructions);
 
 const playerName = document.getElementById('name');
 document.getElementById('start').addEventListener('click', start);
@@ -270,27 +242,31 @@ async function takeButtonClick(event) {
   event.preventDefault();
   let trophy_points = await takeSouvenir();
   await updateStats();
-  toggleElementVisibility('souvenir_question', false);
-  toggleElementVisibility('souvenir_check', true);
   document.querySelector(
       '#souvenir_text').innerHTML = `Otit kohteesta matkamuiston!`;
-  document.querySelector('#souvenier_points').innerHTML = `Sait matkamuistosta ${trophy_points} pistettä`;
+  document.querySelector('#souvenir_points').innerHTML = `Sait matkamuistosta ${trophy_points} pistettä.`;
   const take_button = document.getElementById('takes_souvenir');
   const leave_button = document.getElementById('leaves_souvenir');
   take_button.removeEventListener('click', takeButtonClick);
   leave_button.removeEventListener('click', leaveButtonClick);
+  toggleElementVisibility('location_content', false);
+  toggleElementVisibility('souvenir_question', false);
+  setTimeout(() => {
+    toggleElementVisibility('souvenir_check', true);
+  }, 500)
 }
 
 // Jätä-painikkeen toiminta:
 async function leaveButtonClick(event) {
-  toggleElementVisibility('souvenir_question', false);
-  toggleElementVisibility('souvenir_check', true);
+  toggleElementVisibility('location_content', false);
   document.querySelector(
       '#souvenir_text').innerHTML = `Et ottanut kohteesta matkamuistoa.`;
   const take_button = document.getElementById('takes_souvenir');
   const leave_button = document.getElementById('leaves_souvenir');
   take_button.removeEventListener('click', takeButtonClick);
   leave_button.removeEventListener('click', leaveButtonClick);
+  toggleElementVisibility('souvenir_question', false);
+  toggleElementVisibility('souvenir_check', true);
 }
 
 // Laksee lopulliset pisteet ja päivittää tietokannan scoreboardin:
@@ -333,7 +309,9 @@ async function checkGameLoop(event) {
         '#final_score').innerHTML = final_points_b['final_points'];
 
     toggleElementVisibility('souvenir_check', false);
-    await toggleElementVisibility('gameover_container', true);
+    setTimeout(() => {
+      toggleElementVisibility('gameover_container', true);
+    }, 1000)
     await updateStats();
 
     // Jos matkamuistoja puuttuu:
@@ -356,6 +334,7 @@ async function game(airfield) {
         'event_points').innerHTML = `${movePlayerRes[6]} pistettä.`;
     document.getElementById(
         'weather_points').innerHTML = `${movePlayerRes[5]} pistettä.`;
+    toggleElementVisibility('location_content', true);
     toggleElementVisibility('souvenir_question', true);
 
     const take_button = document.getElementById('takes_souvenir');
