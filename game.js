@@ -1,4 +1,3 @@
-
 const playerName = document.getElementById('name');
 document.getElementById('start').addEventListener('click', start);
 
@@ -244,7 +243,8 @@ async function takeButtonClick(event) {
   await updateStats();
   document.querySelector(
       '#souvenir_text').innerHTML = `Otit kohteesta matkamuiston!`;
-  document.querySelector('#souvenir_points').innerHTML = `Sait matkamuistosta ${trophy_points} pistettä.`;
+  document.querySelector(
+      '#souvenir_points').innerHTML = `Sait matkamuistosta ${trophy_points} pistettä.`;
   const take_button = document.getElementById('takes_souvenir');
   const leave_button = document.getElementById('leaves_souvenir');
   take_button.removeEventListener('click', takeButtonClick);
@@ -253,7 +253,7 @@ async function takeButtonClick(event) {
   toggleElementVisibility('souvenir_question', false);
   setTimeout(() => {
     toggleElementVisibility('souvenir_check', true);
-  }, 500)
+  }, 500);
 }
 
 // Jätä-painikkeen toiminta:
@@ -289,6 +289,25 @@ async function getFinalDistance() {
   }
 }
 
+// Palauttaa pelaajan sijainnin takaisin kotiin ja lisää matkan tästä backendiin lopulliseen matkaan:
+async function returnHome() {
+  try {
+    mapPosition(60.315369447382345, 24.945276215177994);
+    addMarkers([
+      {
+        text: 'Sinä',
+        latitude: 60.315369447382345,
+        longitude: 24.945276215177994,
+        current: true,
+      }]);
+    const response = await fetch(`http://127.0.0.1:3000/return_home`)
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
 // Tsekkaa jatketaanko peliä:
 async function checkGameLoop(event) {
   let trophies = await checkIfEnoughTrophies();
@@ -296,6 +315,8 @@ async function checkGameLoop(event) {
 
   // Jos kaikki matkamuistot on kerätty:
   if (trophies['trophy_status'] === true) {
+    await returnHome();
+    await updateStats();
     const response_f_points_a = await fetch('http://127.0.0.1:3000/points');
     const json_f_points_a = await response_f_points_a.json();
     const final_points_a = json_f_points_a['current_points'];
@@ -311,7 +332,7 @@ async function checkGameLoop(event) {
     toggleElementVisibility('souvenir_check', false);
     setTimeout(() => {
       toggleElementVisibility('gameover_container', true);
-    }, 1000)
+    }, 1000);
     await updateStats();
 
     // Jos matkamuistoja puuttuu:

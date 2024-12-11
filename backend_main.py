@@ -262,6 +262,23 @@ def calculate_final_points():
     }
     return calculated_points
 
+@app.route('/return_home')
+def final_additions():
+    lat_one, long_one = players[-1].latitude, players[-1].longitude
+    players[-1].set_new_location('EFHK')
+    lat_two, long_two = players[-1].latitude, players[-1].longitude
+    current_to_start_distance = distance.distance(
+        (lat_one, long_one),
+        (lat_two, long_two)
+    ).km
+    print(players[-1].distance)
+    players[-1].distance = players[-1].distance + current_to_start_distance
+    print(players[-1].distance)
+    print(current_to_start_distance)
+    status = 200
+    jsonvast = json.dumps(current_to_start_distance)
+    return Response(response=jsonvast, status=status, mimetype="application/json")
+
 
 # Hakee lentokentän nimen, jolla pelaaja on:
 @app.route('/location_name')
